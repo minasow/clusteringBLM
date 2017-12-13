@@ -54,22 +54,17 @@ with open("Period 9 Rand.csv", 'rb') as file_reader:
                 examples.append(laterObj[1])
                 laterexamples.append(laterObj)
 
-#vectorX = list(set(vectorX))
-#examples = list(set(examples))
-#laterexamples = list(set(laterexamples))
-#keep the ngrams here in sync with featureExtractor.py, which includes 1-3ngrams
+
+#keep the ngrams here in sync with featureExtractor.py, which includes 1-2ngrams
 extractor = sklearn.feature_extraction.text.CountVectorizer(input = 'content',ngram_range = (1,3),max_df = 0.95, min_df = .1,stop_words = 'english')
 X = extractor.fit_transform(vectorX)
 
-clusterer = sklearn.cluster.clustererlustering(n_clusters = k)
+clusterer = sklearn.cluster.SpectralClustering(n_clusters = k)
 #clusterer = sklearn.cluster.KMeans(n_clusters = k)
 #clusterer = sklearn.cluster.DBSCAN(min_samples = 100)
 
 res = clusterer.fit(X)
-#print("Inertia"
-#print(clusterer.inertia_
-#X = X.todense()
-#vector0 = []
+
 #build the dict-style clusters so I can use my same distortion function consistently across them
 clusters = [0]*k
 counts = Counter(clusterer.labels_)
@@ -81,8 +76,6 @@ for i in range(k):
     #exToTake = random.sample(indices,10)
     print("Top ten ngrams:")
     nparr = np.array(examples)
-    #print(nparr[exToTake]
-    #print(nparr[indices]
     clusters[i] = averageexamples(nparr[indices])
 
     #finds the highest weight keywords for each cluster
@@ -97,21 +90,3 @@ for i in range(k):
     print(two[-10:])
 print "Distortion:"
 print calculateDistortion(examples, clusters, clusterer.labels_)
-'''
-for i in range(k):
-    total = []
-    count = 0
-    print("Cluster %d has examples:" % i
-    for j in range(len(examples)):
-        dictOfEx = examples[j]
-        if clusterer.labels_[j] == i:
-            total.append(dictOfEx)
-            if count < 10: print(vectorX[j]
-            count += 1.
-    clusters[i] = averageexamples(total)
-
-distortion = calculateDistortion(examples, clusters, clusterer.labels_)
-print("Distortion"
-print(distortion
-        #if i == 0:
-        #    vector0.append(vectorX[j])'''

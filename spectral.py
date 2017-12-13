@@ -13,7 +13,7 @@ class Spectral():
 
 def cluster(X):
 	stdev = 1
-	k = 5
+	k = 4
 
 	def buildAffinity(i,j):
 		if(i==j):
@@ -23,7 +23,6 @@ def cluster(X):
 			return np.exp((-1*norm)/(2*stdev))
 	def distanceCalculation(example,cluster):
 		oldres = math.sqrt(sum([(example[dimension] - cluster[dimension])**2  for dimension in example.keys()]))
-		##print "for examples %s and cluster %s with precomp %f had distance %f" % (example, cluster, precomputation,res)
 		return oldres
 	def calculateDistortion(examples,clusters,assignments):
 		distortion = 0
@@ -44,6 +43,7 @@ def cluster(X):
 			return sum(affMatrix[i])
 		else:
 			return 0.
+
 	g = np.vectorize(buildD)
 	dMatrix = np.fromfunction(lambda i,j: g(i,j),(len(X),len(X)),dtype = int)
 	dPowered = linalg.fractional_matrix_power(dMatrix,(-.5))
@@ -54,12 +54,8 @@ def cluster(X):
 	print Y.shape
 	kmeans = KMeans(n_clusters = k).fit(Y)
 
-	#kclusters,kassignments,kloss, klossArr = Kmeans(examples,k,100).clustering()
-	#print len(kclusters)
-	#print len(kassignments)
 	for i in range(len(X)):
 		assignments[i] = kmeans.labels_.tolist()[i]
-	#print assignments
 	print "Distortion is"
 	print calculateDistortion(X,kmeans.cluster_centers_.tolist(),assignments)
 	return kmeans.cluster_centers_.tolist(),assignments,kmeans.inertia_, lossArr

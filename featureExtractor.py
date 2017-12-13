@@ -21,7 +21,7 @@ def extract(x):
 	tokens = x.split(" ")
 	uni_gram = list(collections.Counter(ngrams(tokens,1)))#list(collections.Counter(ngrams(tokens,1))) 
 	bi_gram = list(collections.Counter(ngrams(tokens,2))) 
-	tri_gram = []#list(collections.Counter(ngrams(tokens,3))) 
+	#tri_gram = list(collections.Counter(ngrams(tokens,3))) 
 
 	for ngram in uni_gram + bi_gram + tri_gram:
 		d[ngram] += 1
