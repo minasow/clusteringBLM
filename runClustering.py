@@ -41,52 +41,53 @@ laterexamples = []
 vectorX = []
 k = 4
 
-with open("Period 9 Rand.csv", 'rb') as file_reader:
-            reader = csv.reader(file_reader, delimiter = ",")
-            counter = 0
-            for line in reader:
-                if counter == 1000: break
-                counter += 1
-                #raw tweet was line[0]
-                #cleaned tweet was line[1]
-                vectorX.append(line[1])
-                laterObj = (line[0],FeatureExtractor(line[1]).featureVector())
-                examples.append(laterObj[1])
-                laterexamples.append(laterObj)
+for i in range(1,10):
+    with open("Period" + str(i) + ".csv", 'rb') as file_reader:
+                reader = csv.reader(file_reader, delimiter = ",")
+                counter = 0
+                for line in reader:
+                    if counter == 1000: break
+                    counter += 1
+                    #raw tweet was line[0]
+                    #cleaned tweet was line[1]
+                    vectorX.append(line[1])
+                    laterObj = (line[0],FeatureExtractor(line[1]).featureVector())
+                    examples.append(laterObj[1])
+                    laterexamples.append(laterObj)
 
 
-#keep the ngrams here in sync with featureExtractor.py, which includes 1-2ngrams
-extractor = sklearn.feature_extraction.text.CountVectorizer(input = 'content',ngram_range = (1,3),max_df = 0.95, min_df = .1,stop_words = 'english')
-X = extractor.fit_transform(vectorX)
+    #keep the ngrams here in sync with featureExtractor.py, which includes 1-2ngrams
+    extractor = sklearn.feature_extraction.text.CountVectorizer(input = 'content',ngram_range = (1,3),max_df = 0.95, min_df = .1,stop_words = 'english')
+    X = extractor.fit_transform(vectorX)
 
-clusterer = sklearn.cluster.SpectralClustering(n_clusters = k)
-#clusterer = sklearn.cluster.KMeans(n_clusters = k)
-#clusterer = sklearn.cluster.DBSCAN(min_samples = 100)
+    clusterer = sklearn.cluster.SpectralClustering(n_clusters = k)
+    #clusterer = sklearn.cluster.KMeans(n_clusters = k)
+    #clusterer = sklearn.cluster.DBSCAN(min_samples = 100)
 
-res = clusterer.fit(X)
+    res = clusterer.fit(X)
+    print "Clusters for time period %d" % i
+    #build the dict-style clusters so I can use my same distortion function consistently across them
+    clusters = [0]*k
+    counts = Counter(clusterer.labels_)
+    print(counts)
+    arr = np.array(clusterer.labels_)
+    for i in range(k):
+        print("Cluster %d" % i)
+        indices = np.where(arr == i)[0]
+        #exToTake = random.sample(indices,10)
+        print("Top ten ngrams:")
+        nparr = np.array(examples)
+        clusters[i] = averageexamples(nparr[indices])
 
-#build the dict-style clusters so I can use my same distortion function consistently across them
-clusters = [0]*k
-counts = Counter(clusterer.labels_)
-print(counts)
-arr = np.array(clusterer.labels_)
-for i in range(k):
-    print("Cluster %d" % i)
-    indices = np.where(arr == i)[0]
-    #exToTake = random.sample(indices,10)
-    print("Top ten ngrams:")
-    nparr = np.array(examples)
-    clusters[i] = averageexamples(nparr[indices])
-
-    #finds the highest weight keywords for each cluster
-    d_choices = clusters[i].keys()
-    d_probs = clusters[i].values()
-    lis = sorted(zip(d_choices,d_probs),key = lambda tup: tup[1])
-    one = [x for x in lis if len(x[0]) == 1 and "<hashtag>" not in x[0] and  "<user>" not in x[0] and  "<url>" not in x[0]]
-    two = [x for x in lis if len(x[0]) == 2 and "<hashtag>" not in x[0] and  "<user>" not in x[0] and  "<url>" not in x[0]]
-    print("one grams")
-    print(one[-10:])
-    print("bigrams")
-    print(two[-10:])
-print "Distortion:"
-print calculateDistortion(examples, clusters, clusterer.labels_)
+        #finds the highest weight keywords for each cluster
+        d_choices = clusters[i].keys()
+        d_probs = clusters[i].values()
+        lis = sorted(zip(d_choices,d_probs),key = lambda tup: tup[1])
+        one = [x for x in lis if len(x[0]) == 1 and "<hashtag>" not in x[0] and  "<user>" not in x[0] and  "<url>" not in x[0]]
+        two = [x for x in lis if len(x[0]) == 2 and "<hashtag>" not in x[0] and  "<user>" not in x[0] and  "<url>" not in x[0]]
+        print("one grams")
+        print(one[-10:])
+        print("bigrams")
+        print(two[-10:])
+    print "Distortion:"
+    print calculateDistortion(examples, clusters, clusterer.labels_)
