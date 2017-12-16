@@ -46,6 +46,10 @@ kmeans.py: From-scratch implementation of KMeans.
 Commands to run:
 
 python findK.py: Will run the elbow method approach to finding optimal number of clusters
+		First: Edit line 46 to change what time period dataset you will be running through the elbow method.
+
 python visualizeData.py: Will run the dimensional reduction and graphing to help visualize any patterns in the data.
+
 python runClustering.py: 
 		First: Edit lines 62-64 comments of file to modify what clustering algorithm to use. Then run this command to see results.
+		Second: Edit line 49 break to specify a subset of the data to investigate, instead of the full 10,000. Useful during development process.

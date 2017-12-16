@@ -46,7 +46,7 @@ for i in range(1,10):
                 reader = csv.reader(file_reader, delimiter = ",")
                 counter = 0
                 for line in reader:
-                    if counter == 1000: break
+                    if counter == 5000: break #this is added to make testing quicker by looking at a subset of the data
                     counter += 1
                     #raw tweet was line[0]
                     #cleaned tweet was line[1]

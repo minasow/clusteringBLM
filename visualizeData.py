@@ -21,18 +21,9 @@ with open("Period 4 Rand.csv", 'rb') as file_reader:
             reader = csv.reader(file_reader, delimiter = ",")
             counter = 0
             for line in reader:
-            	#if counter == 1000: break
             	counter += 1
-            	#print line
-                #examples.append(extractWordFeatures(line[0]))
-                #print "raw tweet was"
-                #print line[0]
-                #print "cleaned tweet was "
-                #print line[1]
                 vectorX.append(line[1])
                 laterObj = (line[0],FeatureExtractor(line[1]).featureVector())
-                #print "featurevector was"
-                #print str(obj)
                 examples.append(laterObj[1])
                 laterexamples.append(laterObj)
 
